@@ -1,5 +1,9 @@
 const express = require('express');
 const bodyparser = require('body-parser');
+const http = require('http');
+const cors = require('cors');
+const https = require('https');
+const fs = require('fs');
 const { Expo } = require('expo-server-sdk');
 
 let expo = new Expo();
@@ -7,13 +11,25 @@ let expo = new Expo();
 const app = express();
 const port = 80;
 
+const privKey = fs.readFileSync('public/ssl-cert/private.key', 'utf8');
+const certificate = fs.readFileSync('public/ssl-cert/certificate.crt', 'utf8');
+const ca = fs.readFileSync('public/ssl-cert/ca_bundle.crt', 'utf8');
+
+const creds = {
+    key: privKey,
+    cert: certificate,
+    ca: ca
+};
+
 app.engine("html", require("ejs").renderFile);
+app.use(cors());
 app.use(bodyparser.json({ limit: '1mb' }));
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.set("view engine", "ejs");
 
 let clients = new Object;
+let conversationContext = new Object;
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -32,6 +48,14 @@ app.post('/registerToken', async (req, res) => {
     clients[app_token] = expo_token;
     console.log(clients)
     res.json({'test': '123'})
+})
+
+app.post('/sendContext', async(req, res) => {
+    console.log(req.body);
+    // const {app_token, context} = req.body;
+    // console.log(app_token, context);
+    // conversationContext[app_token] = context;
+    res.json({'status': 'ok'})
 })
 
 app.get('/genToken', async(req, res) => {
@@ -54,8 +78,15 @@ app.get('/send', async (req, res) => {
     res.send('ok');
 })
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(creds, app);
+
+// httpServer.listen(80, () => {
+//     console.log("HTTP Server up")
+// })
+
+httpsServer.listen(443, () => {
+    console.log("HTTPS Server up")
 })
 
 async function sendMessages(pushTokens){
@@ -94,7 +125,7 @@ async function sendMessages(pushTokens){
         // documentation:
         // https://docs.expo.io/push-notifications/sending-notifications/#individual-errors
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
     }
     })();
