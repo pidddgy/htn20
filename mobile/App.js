@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, Component, useState } from 'react';
-import { Picker, StyleSheet,View, Text, AsyncStorageStatic, SafeAreaView, ScrollView, TextInput } from 'react-native';
+import { Picker, StyleSheet,View, Text, AsyncStorageStatic, SafeAreaView, ScrollView, TextInput, Button } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
@@ -111,23 +111,102 @@ return (
         </View>
 
         <View>
-
-        <Text> {"\n \n"}Send a response: </Text>
-
-    <Picker
-        style={{ height: 50, width: 150 }}
-        // onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-    >
-        {
-            ['yes', 'no', 'my wifi isnt working', 'im here', 'my mic isnt working', 'give me a second', 'what do you want hoe'].map((val) => {
-                    var k = Math.random();
-                return <Picker.Item key = {val} label={val} value={val} />
-            })
-        }
-        {/* <Picker.Item label="yes" value="yes" /> */}
-        {/* <Picker.Item label="no" value="no" /> */}
-
-    </Picker>
+    <Button
+        title="Yes"
+        onPress={() => {
+            fetch(`https://api.osn-reo.org/sendMessage`, {
+                'method': 'POST',
+                'headers': {
+                    'content-type': 'application/json'
+                },
+                'body': JSON.stringify({'app_token': app_token, "msg": 'Yes'})
+            });
+        }}
+    />
+    <Button
+        title="No"
+        onPress={() => {
+            fetch(`https://api.osn-reo.org/sendMessage`, {
+                'method': 'POST',
+                'headers': {
+                    'content-type': 'application/json'
+                },
+                'body': JSON.stringify({'app_token': app_token, "msg": 'No'})
+            });
+        }}
+    />
+    <Button
+        title="Im here"
+        onPress={() => {
+            fetch(`https://api.osn-reo.org/sendMessage`, {
+                'method': 'POST',
+                'headers': {
+                    'content-type': 'application/json'
+                },
+                'body': JSON.stringify({'app_token': app_token, "msg": 'im here'})
+            });
+        }}
+    />
+    <Button
+        title="My wifi isn't working"
+        onPress={() => {
+            fetch(`https://api.osn-reo.org/sendMessage`, {
+                'method': 'POST',
+                'headers': {
+                    'content-type': 'application/json'
+                },
+                'body': JSON.stringify({'app_token': app_token, "msg": 'my wifi isn\'t working'})
+            });
+        }}
+    />
+    <Button
+        title="give me a second"
+        onPress={() => {
+            fetch(`https://api.osn-reo.org/sendMessage`, {
+                'method': 'POST',
+                'headers': {
+                    'content-type': 'application/json'
+                },
+                'body': JSON.stringify({'app_token': app_token, "msg": 'give me a second'})
+            });
+        }}
+    />
+    <Button
+        title="what do you want hoe"
+        onPress={() => {
+            fetch(`https://api.osn-reo.org/sendMessage`, {
+                'method': 'POST',
+                'headers': {
+                    'content-type': 'application/json'
+                },
+                'body': JSON.stringify({'app_token': app_token, "msg": 'what do you want hoe'})
+            });
+        }}
+    />
+    <Button
+        title="my mic not work :("
+        onPress={() => {
+            fetch(`https://api.osn-reo.org/sendMessage`, {
+                'method': 'POST',
+                'headers': {
+                    'content-type': 'application/json'
+                },
+                'body': JSON.stringify({'app_token': app_token, "msg": 'sorry, my mic isnt working'})
+            });
+        }}
+    />
+    <Button
+        title="i dont know"
+        onPress={() => {
+            fetch(`https://api.osn-reo.org/sendMessage`, {
+                'method': 'POST',
+                'headers': {
+                    'content-type': 'application/json'
+                },
+                'body': JSON.stringify({'app_token': app_token, "msg": 'i dont know'})
+            });
+        }}
+    />
         </View>
     </ScrollView>
 
