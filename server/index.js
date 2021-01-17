@@ -31,6 +31,9 @@ app.set("view engine", "ejs");
 let clients = new Object;
 let conversationContext = new Object;
 let messages = new Object;
+let keywords = new Object;
+keywords['WNBEND'] = {'attendance': 0, 'bert': 0, 'marcus': 0}
+
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -55,6 +58,38 @@ app.post('/sendContext', async(req, res) => {
     const {app_token, context} = req.body;
     conversationContext[app_token] = context;
     res.json({'status': 'ok'})
+    // count words
+    // words to count for
+    let words = [];
+    let count = new Object;
+    words = Object.keys(keywords[app_token])
+    words.forEach(word => {
+        count[word] = 0
+    })
+    const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+    
+    context.forEach(text => {
+        text = text[1].toLowerCase()
+        for(let i = 0; i < text.length; i++){
+            words.forEach(word => {
+                if(i + word.length-1 < text.length && (text.substr(i, word.length) === word)){
+                    console.log(text.substr(i, word.length))
+                    count[word]++;
+                }
+            })
+        }
+    })
+    words.forEach(word => {
+        console.log(word, count[word], keywords[app_token][word])
+        if(keywords[app_token][word] < count[word]){
+            // send message
+            sendMessages([clients[app_token]], `${word} was said.`)
+            console.log(clients)
+            console.log('word', word, 'was said')
+            keywords[app_token][word] = count[word]
+        }
+    })
+
 })
 
 app.post('/context', (req, res) => {
@@ -95,7 +130,7 @@ httpsServer.listen(443, () => {
     console.log("HTTPS Server up")
 })
 
-async function sendMessages(pushTokens){
+async function sendMessages(pushTokens, msg='Test Notif'){
     let messages = [];
     for (let pushToken of pushTokens) {
     // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
@@ -110,7 +145,7 @@ async function sendMessages(pushTokens){
     messages.push({
         to: pushToken,
         sound: 'default',
-        body: 'This is a test notification',
+        body: msg,
         data: { withSome: 'data' },
     })
     }
@@ -142,7 +177,7 @@ function generateToken(){
     while(clients[token]){ // keep generating tokens until token does not exist
         token = randString()
     }
-    return token;
+    return "WNBEND";
 }
 
 function randString(length=6){

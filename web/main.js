@@ -21,7 +21,7 @@ since ids are increasing, it's easy to construct the chat logs in chronological 
  // select the target node
 var target = document.querySelector('.a4cQT')
 var ctx = []
-var app_token = 'YYOTYQ';
+var app_token = 'WNBEND';
 let currentMark = -1;
  // console.log(target)
  // create an observer instance
