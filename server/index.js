@@ -30,6 +30,7 @@ app.set("view engine", "ejs");
 
 let clients = new Object;
 let conversationContext = new Object;
+let messages = new Object;
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -51,26 +52,31 @@ app.post('/registerToken', async (req, res) => {
 })
 
 app.post('/sendContext', async(req, res) => {
-    console.log(req.body);
-    // const {app_token, context} = req.body;
-    // console.log(app_token, context);
-    // conversationContext[app_token] = context;
+    const {app_token, context} = req.body;
+    conversationContext[app_token] = context;
     res.json({'status': 'ok'})
 })
 
-app.get('/genToken', async(req, res) => {
-    let token = generateToken();
-    console.log(token)
-    registered_tokens.push(token)
-    res.send(token)
+app.post('/context', (req, res) => {
+    const {app_token} = req.body;
+    console.log('request from', app_token)
+    res.json({"context": conversationContext[app_token]});
 })
 
 app.post('/sendMessage', async (req, res) => {
+    const {app_token, msg} = req.body;
+    messages[app_token] = msg;
+    res.send('ok');
+})
+
+app.post('/getMessage', (req, res) => {
     const {app_token} = req.body;
-    if(clients[app_token]){
-        await sendMessages([clients[app_token]]);
-        res.json({'status': 'ok'});
-    } else res.send('token not found')
+    if(messages[app_token]){
+        res.json({"msg": messages[app_token]})
+        delete messages[app_token]
+    } else {
+        res.json({'err': 'no msg found'})
+    }
 })
 
 app.get('/send', async (req, res) => {

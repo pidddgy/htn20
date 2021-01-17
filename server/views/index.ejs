@@ -10,9 +10,9 @@
         <p>this some scuffed stuff</p>
         <button onclick="test_fetch('123')">do the fetchy</button>
 
-        <form action="/registerToken" method="POST">
-            <input type="text" name="expo_token">
-            <input type="text" name="app_token">
+        <form action="/sendMessage" method="POST">
+            <input type="text" name="app_token" placeholder='token'>
+            <input type="text" name="msg" placeholder='msg'>
             <button type="submit">Submit</button>
         </form>
     </body>

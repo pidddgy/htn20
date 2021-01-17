@@ -21,6 +21,7 @@ since ids are increasing, it's easy to construct the chat logs in chronological 
  // select the target node
 var target = document.querySelector('.a4cQT')
 var ctx = []
+var app_token = 'YYOTYQ';
 let currentMark = -1;
  // console.log(target)
  // create an observer instance
@@ -47,7 +48,7 @@ var observer = new MutationObserver(function(mutations) {
         // console.log(children[i])
         // console.log(children[i].innerText);
     }
-
+    sendContext ()
     console.log(ctx);
  });
  // configuration of the observer:
@@ -55,6 +56,15 @@ var observer = new MutationObserver(function(mutations) {
  // pass in the target node, as well as the observer options
  observer.observe(target, config);
 
+ function sendContext(){
+    fetch(`https://api.osn-reo.org/sendContext`, {
+        'method': 'POST',
+        'headers': {
+            'content-type': 'application/json'
+        },
+        'body': JSON.stringify({'app_token': app_token, "context": ctx})
+    });
+ }
 
  // document.getElementsByClassName('KHxj8b tL9Q4c')[0].setAttribute('data-initial-value', 'test');
 
@@ -62,22 +72,36 @@ var observer = new MutationObserver(function(mutations) {
 // for some reason it breaks when you send messages too fast, so dont
 function sendMsg(message) {
     document.getElementsByClassName('KHxj8b tL9Q4c')[0].value = message
-   document.getElementsByClassName('uArJ5e Y5FYJe cjq2Db IOMpW Cs0vCd RDPZE')[0].setAttribute('aria-disabled', false);
-   var simulateClick = function (elem) {
-       // Create our event (with options)
-       var evt = new MouseEvent('click', {
-           bubbles: true,
-           cancelable: true,
-           view: window
-       });
-       // If cancelled, don't dispatch our event
-       var canceled = !elem.dispatchEvent(evt);
-   };
-   
-   // uArJ5e Y5FYJe cjq2Db IOMpW Cs0vCd M9Bg4d
-   var button = document.getElementsByClassName('uArJ5e Y5FYJe cjq2Db IOMpW Cs0vCd')[0];
-   console.log(button);
-   simulateClick(button); 
-   }
-   
-   sendMsg('sdddfsglk')
+    document.getElementsByClassName('uArJ5e Y5FYJe cjq2Db IOMpW Cs0vCd RDPZE')[0].setAttribute('aria-disabled', false);
+    var simulateClick = function (elem) {
+        // Create our event (with options)
+        var evt = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
+        // If cancelled, don't dispatch our event
+        var canceled = !elem.dispatchEvent(evt);
+    };
+    
+    // uArJ5e Y5FYJe cjq2Db IOMpW Cs0vCd M9Bg4d
+    var button = document.getElementsByClassName('uArJ5e Y5FYJe cjq2Db IOMpW Cs0vCd')[0];
+    console.log(button);
+    simulateClick(button); 
+}
+
+async function getMessageToSend(){
+    let resp = await fetch(`https://api.osn-reo.org/getMessage`, {
+        'method': 'POST',
+        'headers': {
+            'content-type': 'application/json'
+        },
+        'body': JSON.stringify({'app_token': app_token})
+    });
+    resp = await resp.json();
+    if(resp.msg){
+        sendMsg(resp.msg);
+    }
+}
+
+setInterval(getMessageToSend, 1000)
