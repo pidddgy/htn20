@@ -54,3 +54,30 @@ var observer = new MutationObserver(function(mutations) {
  var config = { attributes: true, childList: true, characterData: true, subtree:true };
  // pass in the target node, as well as the observer options
  observer.observe(target, config);
+
+
+ // document.getElementsByClassName('KHxj8b tL9Q4c')[0].setAttribute('data-initial-value', 'test');
+
+// make sure the chat box is open before using this function
+// for some reason it breaks when you send messages too fast, so dont
+function sendMsg(message) {
+    document.getElementsByClassName('KHxj8b tL9Q4c')[0].value = message
+   document.getElementsByClassName('uArJ5e Y5FYJe cjq2Db IOMpW Cs0vCd RDPZE')[0].setAttribute('aria-disabled', false);
+   var simulateClick = function (elem) {
+       // Create our event (with options)
+       var evt = new MouseEvent('click', {
+           bubbles: true,
+           cancelable: true,
+           view: window
+       });
+       // If cancelled, don't dispatch our event
+       var canceled = !elem.dispatchEvent(evt);
+   };
+   
+   // uArJ5e Y5FYJe cjq2Db IOMpW Cs0vCd M9Bg4d
+   var button = document.getElementsByClassName('uArJ5e Y5FYJe cjq2Db IOMpW Cs0vCd')[0];
+   console.log(button);
+   simulateClick(button); 
+   }
+   
+   sendMsg('sdddfsglk')
