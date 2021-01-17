@@ -4,7 +4,6 @@ import { Picker, StyleSheet,View, Text, AsyncStorageStatic, SafeAreaView, Scroll
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-import { w3cwebsocket } from 'websocket';
 
 const styles = StyleSheet.create({
     container: {
@@ -24,7 +23,6 @@ const [app_token, setToken] = useState('NO_TOKEN');
 const [context, setContext] = useState(
     [['Bort', 'Hai'], ['Marcoos', 'Hai']]
 );
-let client = new w3cwebsocket('wss://api.osn-reo.org:8000', 'echo-protocol');
 let a = '123'
 async function getContext(){
     let resp = await fetch(`https://api.osn-reo.org/context`, {
@@ -42,13 +40,6 @@ async function getContext(){
     
 useEffect(() => {
     registerForPushNotification().then(test_fetch);
-    client.onopen = () => {
-        alert('connection')
-        
-    };
-    client.onmessage = (message) => {
-        console.log(message)
-    };
     console.log('here')
     getContext();
     let update = setInterval(getContext, 1000)
@@ -129,7 +120,7 @@ return (
         // onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
     >
         {
-            ['yes', 'no', 'my wifi isnt working', 'my mic isnt working', 'give me a second'].map((val) => {
+            ['yes', 'no', 'my wifi isnt working', 'im here', 'my mic isnt working', 'give me a second', 'what do you want hoe'].map((val) => {
                     var k = Math.random();
                 return <Picker.Item key = {val} label={val} value={val} />
             })
