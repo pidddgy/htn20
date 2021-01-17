@@ -24,13 +24,13 @@ const [context, setContext] = useState(
     [['Bort', 'Hai'], ['Marcoos', 'Hai']]
 );
 let a = '123'
-async function getContext(){
+async function getContext(token){
     let resp = await fetch(`https://api.osn-reo.org/context`, {
         'method': 'POST',
         'headers': {
             'content-type': 'application/json'
         },
-        'body': JSON.stringify({'app_token': app_token})
+        'body': JSON.stringify({'app_token': token})
     });
     resp = await resp.json()
     if(resp.context){
@@ -41,8 +41,6 @@ async function getContext(){
 useEffect(() => {
     registerForPushNotification().then(test_fetch);
     console.log('here')
-    getContext();
-    let update = setInterval(getContext, 1000)
 }, [])
 
 
@@ -61,6 +59,7 @@ async function logging(data) {
     let response = await data.json().then(res => res["app_token"]);
     console.log(response);
     setToken(response);
+    setInterval(getContext, 1000, response);
 }
 
 async function registerForPushNotification(){
@@ -73,7 +72,7 @@ async function registerForPushNotification(){
     return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    return token
+    return token;
 }
 
 console.log("Built");
